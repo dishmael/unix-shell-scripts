@@ -1,0 +1,11 @@
+#!/bin/bash
+
+#
+# Sometimes the system memory cache gets clogged up and refuses to
+# free up when memory is needed. In that case, the following commands
+# will clear the cache and free up memory for use by other apps.
+#
+
+#free && sync && echo 3 > /proc/sys/vm/drop_caches && free
+#
+#sync && echo 3 > /proc/sys/vm/drop_caches
