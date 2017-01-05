@@ -1,0 +1,15 @@
+#!/bin/bash
+
+# http://www.linuxhowtos.org/System/Linux%20Memory%20Management.htm
+
+# Note: Default value is typically 60 for swappiness
+
+# Change swappiness at runtime
+#
+# sysctl -w vm.swappiness=30 
+# echo 30 >/proc/sys/vm/swappiness
+
+# File: /etc/sysctl.conf 
+# Control how much the kernel should
+# favor swapping out applications (0-100) 
+# vm.swappiness = 30
