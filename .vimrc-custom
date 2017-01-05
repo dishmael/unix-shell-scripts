@@ -1,0 +1,19 @@
+" Set the comment color to something a bit easier on the eyes
+hi Comment ctermfg=lightcyan
+
+" Disable highlighting between searches
+set nohlsearch
+
+" Customizations below
+set tabstop=2
+set shiftwidth=2
+set expandtab
+
+" If the colorcolumn option is present (vim 7.3+), use that to set column
+" color at the 80th position. If not, then change the font color to red
+" for any characters past the 80th position.
+if exists('+colorcolumn')
+	set colorcolumn=80
+else
+	au BufWinEnter * let w:m2=matchadd('ErrorMsg', '\%>80v.\+', -1)
+endif
