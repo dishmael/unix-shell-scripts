@@ -1,0 +1,198 @@
+# ----------------------------------------------------------------------
+# This BASH file contains environment variables and utility functions
+# for the IBM Tivoli Netcool/OMNIbus product. This file should be called
+# by the user's .bashrc and/or .bash_profile scripts.
+# ----------------------------------------------------------------------
+
+# ----------------------
+# Netcool Specific Environment Variables
+# ----------------------
+export NC_HOME=/opt/netcool
+export OMNIHOME=${NC_HOME}/omnibus
+export NC_RULES_HOME=${NC_HOME}/etc/rules
+export NC_STATUS=${OMNIHOME}/bin/nco_pa_status
+export NC_STOP=${OMNIHOME}/bin/nco_pa_stop
+export NC_START=${OMNIHOME}/bin/nco_pa_start
+export NC_SYNTAX=${OMNIHOME}/probes/nco_p_syntax
+export NC_SYSLOG_RULES="${NC_RULES_HOME}/syslog.rules"
+export NC_SNMP_RULES="${NC_RULES_HOME}/snmptrap.rules"
+export NC_SOCKET_MDS_RULES="${NC_RULES_HOME}/socket_MDS.rules"
+export NC_SOCKET_CGS_RULES="${NC_RULES_HOME}/socket_CGS.rules"
+export NCOPA=NC_PA_PRB01_SFT
+export NCOMS=NCOMS01_SFT
+export NCUSER="netcool"
+export NCPASS=""
+
+# ----------------------
+# Highlight Utility
+# https://github.com/kepkin/dev-shell-essentials/blob/master/highlight.sh 
+# ----------------------
+function highlight() {
+    declare -A fg_color_map
+    fg_color_map[black]=30
+    fg_color_map[red]=31
+    fg_color_map[green]=32
+    fg_color_map[yellow]=33
+    fg_color_map[blue]=34
+    fg_color_map[magenta]=35
+    fg_color_map[cyan]=36
+    fg_color_map[redbg]=41
+    fg_color_map[greenbg]=42
+    fg_color_map[yellowbg]=43
+    fg_color_map[bluebg]=44
+    fg_color_map[magentabg]=45
+    fg_color_map[cyanbg]=46
+
+    fg_c=$(echo -e "\e[1;${fg_color_map[$1]}m")
+    c_rs=$'\e[0m'
+    #sed s"/$2/$fg_c\0$c_rs/g"
+    sed s"/\(.*\)$2\(.*\)/$fg_c\0$c_rs/gi"
+}
+
+# ----------------------
+# Prompt for the Netcool Password
+# ----------------------
+function prompt_for_password() {
+    echo -n "Password for ${NCUSER}:" && read -s NCPASS && echo ""
+    export NCPASS
+}
+
+# ----------------------
+# Stop a Netcool Process
+# ----------------------
+function stop_proc() {
+    local _proc=$1
+    local _count=0
+
+    if [ "X"${NCPASS} == "X" ]; then prompt_for_password; fi
+    ${NC_HOME}/omnibus/bin/nco_pa_stop \
+        -server ${NCOPA} \
+        -process ${_proc} \
+        -user ${NCUSER} \
+        -password ${NCPASS}
+
+    echo -n "Stopping "
+    while (true); do
+        _count=`ps -ef | grep ${_proc} | grep -v grep | wc -l`
+        if [ "${_count}" == "0" ]; then
+            echo ". DONE"
+            break
+        fi
+        echo -n "."
+        sleep 1
+    done
+}
+
+# ----------------------
+# Start a Netcool Process
+# ----------------------
+function start_proc() {
+    local _proc=$1
+    local _count=0
+
+    if [ "X"${NCPASS} == "X" ]; then prompt_for_password; fi
+    ${NC_HOME}/omnibus/bin/nco_pa_start \
+        -server ${NCOPA} \
+        -process ${_proc} \
+        -user ${NCUSER} \
+        -password ${NCPASS}
+
+    echo -n "Starting "
+    while (true); do
+        _count=`ps -ef | grep ${_proc} | grep -v grep | wc -l`
+        if [ "${_count}" != "0" ]; then
+            echo ". DONE"
+            break
+        fi
+        echo -n "."
+        sleep 1
+    done
+}
+
+# ----------------------
+# Restart Netcool Process
+# ----------------------
+function restart_proc() {
+	if [ -z "$1" ]; then
+		echo "No process specified"
+
+	else
+		local _proc=$1
+    local _count=0
+
+    # Stop the process
+    stop_proc ${_proc}
+
+    # Start the process
+    start_proc ${_proc}
+	fi
+}
+
+# ----------------------
+# Show the Status of the PA Proceses
+# ----------------------
+function show_status() {
+    if [ "X"${NCPASS} == "X" ]; then prompt_for_password; fi
+    ${NC_HOME}/omnibus/bin/nco_pa_status \
+        -server ${NCOPA} \
+        -user ${NCUSER} \
+        -password ${NCPASS}
+}
+
+# ----------------------
+# Bounce a Socket Probes
+# ----------------------
+function bounce_sockets() {
+    if [ "X"${NCPASS} == "X" ]; then prompt_for_password; fi
+    stop_proc "SOCKETMDS" && start_proc "SOCKETMDS"
+    stop_proc "SOCKETCGS" && start_proc "SOCKETCGS"
+    show_status
+}
+
+# ----------------------
+# Perform a Rules Check for the Specified Rule File
+# ----------------------
+function syntax() {
+	if [ -z "$1" ]; then
+		echo "No rule file specified"
+	else
+		local _rulefile=$1
+		${OMNIHOME}/probes/nco_p_syntax \
+			-rulesfile ${_rulefile} \
+			-server ${NCOMS} | grep -v "zero columns"
+	fi
+}
+
+# ----------------------
+# Perform a Rules Check for the Syslog Probe
+# ----------------------
+function chktrap() {
+	syntax ${NC_SNMP_RULES} | \
+		highlight greenbg "syntax OK" | \
+		highlight redbg "Error"
+}
+
+# ----------------------
+# Perform a Rules Check for the Syslog Probe
+# ----------------------
+function chklog() {
+	syntax ${NC_SYSLOG_RULES} | \ 
+		highlight greenbg "syntax OK" | \
+		highlight redbg "Error"
+}
+
+# ----------------------
+# Perform a Rules Check for the Socket Probes
+# ----------------------
+function chksock() { chkcgs; sleep 3; chkmds; }
+function chkcgs() {
+	syntax ${NC_SOCKET_CGS_RULES} | \
+		highlight greenbg "syntax OK" | \
+		highlight redbg "Error"
+}
+
+function chkmds() {
+	syntax ${NC_SOCKET_MDS_RULES} | \
+		highlight greenbg "syntax OK" | \
+		highlight redbg "Error"
+}
