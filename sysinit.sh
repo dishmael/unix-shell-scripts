@@ -35,6 +35,6 @@ if [ $? -eq 1 ]; then
 	cd /home/${USER}
 	git clone https://github.com/dishmael/unix-shell-scripts .
 	mv -f /etc/sudoers /etc/sudoers.bak
-	mv -f sudoers /etc/sudoers
+	cp .sudoers /etc/sudoers
 	chown -R ${USER}:${USER} /home/${USER}
 fi
