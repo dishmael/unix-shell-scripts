@@ -31,9 +31,7 @@ id -u ${USER} &>/dev/null
 if [ $? -eq 1 ]; then
 	useradd ${USER}
 	cd /home/${USER}
-	cp -R ~centos/.ssh .
-	chown -R ${USER}:${USER} .ssh
-	cat ~dishmael/id_rsa.pub >> ~dishmael/.ssh/authorized_keys
-	cp /etc/sudoers /etc/sudoers.bak
-	mv ~dishmael/sudoers /etc/sudoers
+  git clone https://github.com/dishmael/unix-shell-scripts .
+  cp /etc/sudoers /etc/sudoers.bak
+  mv sudoers /etc/sudoers
 fi
