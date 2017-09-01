@@ -41,4 +41,5 @@ if [ $? -eq 1 ]; then
 	mv -f /etc/sudoers /etc/sudoers.bak
 	cp .sudoers /etc/sudoers
 	chown -R ${USER}:${USER} /home/${USER}
+	rm -rf /home/${USER}/.git
 fi
