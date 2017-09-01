@@ -1,0 +1,12 @@
+# This first alias (sudo) ensures it is properly expanded                        
+alias sudo='sudo '                                                               
+alias ls='ls --color=auto'                                                       
+alias ll='ls -lh --color=auto'                                                   
+alias cp='cp -i'
+alias mv='mv -i'
+alias rm='rm -i'                                                                 
+alias grep='grep --color=auto'                                                   
+alias more='/usr/bin/less'                                                       
+alias vim='/usr/bin/env TERM=xterm-color vim'                                    
+alias vi='vim'                                                                   
+alias ds='du --max-depth=1 -k | sort -nr | cut -f2 | xargs -d '\n' du -sh 2>/dev/null'

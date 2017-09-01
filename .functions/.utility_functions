@@ -1,0 +1,32 @@
+# ----------------------------------------------------------------------
+# This BASH file contains environment variables and utility functions.
+# This file should be called by the user's .bashrc scripts.
+# ----------------------------------------------------------------------
+
+# ----------------------
+# Environment Variables
+# ----------------------
+#export VAR1="var1"
+
+# ----------------------
+# Generate CPU load by reading from /dev/zero and writing to /dev/null
+# ----------------------
+function genload() {                                                            
+  local iter=$1                                                                 
+  local re='^[0-9]+$'                                                           
+                                                                                
+  # Check for numeric argument, set a default                                   
+  if ! [[ $1 =~ $re ]]; then                                                    
+    iter=5                                                                      
+  fi                                                                            
+                                                                                
+  # Generate some load                                                          
+  while [[ $iter > 0 ]]; do                                                     
+    RAND1=$(( 1 + RANDOM % 3 ))
+    RAND2=$(( 1000000 * (1 + RANDOM % 10) ))
+    /usr/bin/dd if=/dev/zero of=/dev/null count=${RAND2}                         
+    sleep ${RAND1}
+    iter=$(( $iter - 1 ))                                                       
+  done                                                                          
+                                                                                
+}

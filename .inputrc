@@ -1,0 +1,6 @@
+#
+# Readline Tips and Tricks
+#
+# http://caliban.org/bash/
+#
+set show-all-if-ambiguous on

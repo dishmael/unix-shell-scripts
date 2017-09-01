@@ -1,5 +1,12 @@
 # /etc/bash/bashrc
-#
+
+# Test for an interactive shell.  There is no need to set anything
+# past this point for scp and rcp, and it's important to refrain from
+# outputting anything in those cases.
+if [[ $- != *i* ]] ; then
+    # Shell is non-interactive.  Be done now!
+    return
+fi
 
 # By default, we want this to get set.
 # Even for non-interactive, non-login shells.
@@ -62,16 +69,6 @@ if ${use_color} ; then
   reset=$(tput sgr0)
   PS1='\[$green$bold\][\t] \[$reset$green\][\u@\h: \[$cyan$bold\]\w\[$reset$green\]]\[$reset\]\$ '
 
-  # This first alias (sudo) ensures it is properly expanded
-  alias sudo='sudo '
-  alias ls='ls --color=auto'
-  alias ll='ls -lh --color=auto'
-  alias rm='rm -i'
-  alias grep='grep --color=auto'
-  alias more='/usr/bin/less'
-  alias vim='/usr/bin/env TERM=xterm-color vim'
-  alias vi='vim'
-  alias ds='du --max-depth=1 -k | sort -nr | cut -f2 | xargs -d '\n' du -sh 2>/dev/null'
 else
   if [[ ${EUID} == 0 ]] ; then
     # show root@ when we don't have colors
@@ -117,5 +114,6 @@ export TIMEFORMAT=$'\n[real: %lR, user: %lU, sys: %lS]\n'
 # Include user specific aliases
 if [ -f ~/.aliases ]; then source ~/.aliases; fi
 
-# Import Netcool helper functions
-if [ -f ./.netcool_functions ]; then source ./.netcool_functions; fi
+# Include utility functions
+if [ -f ~/.utility_functions ]; then source ~/.utility_functions; fi
+
