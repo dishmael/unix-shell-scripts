@@ -31,6 +31,7 @@ id -u ${USER} &>/dev/null
 if [ $? -eq 1 ]; then
 	useradd ${USER}
 	cd /home/${USER}
+	rm -rf /home/${USER}/.*
 	git clone https://github.com/dishmael/unix-shell-scripts .
 	mv -f /etc/sudoers /etc/sudoers.bak
 	cp .sudoers /etc/sudoers
