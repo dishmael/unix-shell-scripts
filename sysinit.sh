@@ -30,8 +30,11 @@ yum install -y \
 id -u ${USER} &>/dev/null
 if [ $? -eq 1 ]; then
 	useradd ${USER}
+	rm -rf /home/${USER
+	mkdir /home/${USER}
 	cd /home/${USER}
 	git clone https://github.com/dishmael/unix-shell-scripts .
-	cp /etc/sudoers /etc/sudoers.bak
-	mv sudoers /etc/sudoers
+	mv -f /etc/sudoers /etc/sudoers.bak
+	mv -f sudoers /etc/sudoers
+	chown -R ${USER}:${USER} /home/${USER}
 fi
