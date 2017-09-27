@@ -111,11 +111,11 @@ unset use_color safe_term match_lhs
 # Make the time output compact
 export TIMEFORMAT=$'\n[real: %lR, user: %lU, sys: %lS]\n'
 
+# Include moogsoft specific environment variables and aliases
+if [ -f ~/.moogsoft ]; then source ~/.moogsoft; fi
+
 # Include user specific aliases
 if [ -f ~/.aliases ]; then source ~/.aliases; fi
-
-# Include moogsoft specific aliases
-if [ -f ~/.moogsoft ]; then source ~/.moogsoft; fi
 
 # Include utility functions
 if [ -f ~/.utility_functions ]; then source ~/.utility_functions; fi
