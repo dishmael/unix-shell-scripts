@@ -1,0 +1,15 @@
+# Moogsoft
+export MOOGSOFT_HOME=/usr/share/moogsoft
+export JAVA_HOME=/usr/java/latest
+export APPSERVER_HOME=/usr/share/apache-tomcat
+export PATH=$PATH:$MOOGSOFT_HOME/bin:$MOOGSOFT_HOME/bin/utils
+
+# Aliases
+alias moo="cd $MOOGSOFT_HOME" 
+alias moog="cd $MOOGSOFT_HOME" 
+alias mlog="cd /var/log/moogsoft" 
+alias clog="cd /var/log/moogsoft/captures" 
+alias mconfig="cd $MOOGSOFT_HOME/config" 
+alias mbots="cd $MOOGSOFT_HOME/bots" 
+alias lambots="cd $MOOGSOFT_HOME/bots/lambots" 
+alias moobots="cd $MOOGSOFT_HOME/bots/moobots"

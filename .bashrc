@@ -114,6 +114,9 @@ export TIMEFORMAT=$'\n[real: %lR, user: %lU, sys: %lS]\n'
 # Include user specific aliases
 if [ -f ~/.aliases ]; then source ~/.aliases; fi
 
+# Include moogsoft specific aliases
+if [ -f ~/.moogsoft ]; then source ~/.moogsoft; fi
+
 # Include utility functions
 if [ -f ~/.utility_functions ]; then source ~/.utility_functions; fi
 
